@@ -1,8 +1,12 @@
+# Constants section
+
 SUITS = %w[hearts spades clubs diamonds]
 VALUES = %w[2 3 4 5 6 7 8 9 10 Jack Queen King Ace]
 
 BLACKJACK = 21
 DEALER_LIM = 17
+
+# Classes definition
 
 class Card
   attr_reader :value
@@ -198,6 +202,8 @@ class Game
   end
 
 end
+
+# Main app engine
 
 puts "Welcome to Blackjack OO!"
 print "Your name:"
