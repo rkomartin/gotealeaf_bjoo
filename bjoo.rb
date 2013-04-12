@@ -32,15 +32,12 @@ class Deck
   end
 end
 
-class Player
-  attr_reader :name
-
-  def initialize(name)
-    @name = name
+class Hand
+  def initialize
     @hand = []
   end
 
-  def <<(newcard)
+  def add(newcard)
     @hand << newcard
   end
 
@@ -48,7 +45,7 @@ class Player
     @hand.each {|c| puts c.to_s}
   end
 
-  def hand_value
+  def value
     arr = @hand.map{|c| c.value }
     total = 0
 
@@ -65,6 +62,27 @@ class Player
     arr.select{|e| e == "Ace"}.count.times { total -= 10 if total > 21 }
 
     total
+  end
+end
+
+class Player
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+    @hand = Hand.new
+  end
+
+  def <<(newcard)
+    @hand.add(newcard)
+  end
+
+  def hand_show
+    @hand.show
+  end
+
+  def hand_value
+    @hand.value
   end
 
   def blackjack?
@@ -85,9 +103,9 @@ class Game
 
   def show
     puts "\n#{@player.name} has:"
-    @player.show
+    @player.hand_show
     puts "\n#{@dealer.name} has"
-    @dealer.show
+    @dealer.hand_show
   end
 
   def start
