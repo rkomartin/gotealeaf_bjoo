@@ -45,7 +45,7 @@ class Hand
     @hand.each {|c| puts c.to_s}
   end
 
-  def value
+  def blackjack_value
     arr = @hand.map{|c| c.value }
     total = 0
 
@@ -82,7 +82,11 @@ class Player
   end
 
   def hand_value
-    @hand.value
+    @hand.blackjack_value
+  end
+
+  def in_cards?
+    self.hand_value < BLACKJACK ? true : false
   end
 
   def blackjack?
@@ -94,10 +98,16 @@ class Player
   end
 end
 
+class Dealer < Player
+  def in_cards?
+    self.hand_value < DEALER_LIM ? true : false
+  end
+end
+
 class Game
   def initialize(player_name)
     @player = Player.new(player_name)
-    @dealer = Player.new("Dealer")
+    @dealer = Dealer.new("Dealer")
     @deck = Deck.new
   end
 
@@ -126,7 +136,7 @@ class Game
       exit
     end
 
-    while @player.hand_value < BLACKJACK
+    while @player.in_cards?
       puts "\nYour move (Hit/Stay)"
       mv = gets.chomp
 
@@ -160,7 +170,7 @@ class Game
       exit
     end
 
-    while @dealer.hand_value < DEALER_LIM
+    while @dealer.in_cards?
       @dealer << @deck.deal
 
       if @dealer.blackjack?
