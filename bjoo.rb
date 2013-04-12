@@ -5,13 +5,11 @@ BLACKJACK = 21
 DEALER_LIM = 17
 
 class Card
+  attr_reader :value
+
   def initialize(suit, value)
     @suit = suit
     @value = value
-  end
-
-  def value
-    @value
   end
 
   def to_s
@@ -35,6 +33,8 @@ class Deck
 end
 
 class Player
+  attr_reader :name
+
   def initialize(name)
     @name = name
     @hand = []
@@ -46,10 +46,6 @@ class Player
 
   def show
     @hand.each {|c| puts c.to_s}
-  end
-
-  def name
-    @name
   end
 
   def hand_value
