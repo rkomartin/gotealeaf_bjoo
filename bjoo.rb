@@ -1,13 +1,3 @@
-# Constants section
-
-SUITS = %w[hearts spades clubs diamonds]
-VALUES = %w[2 3 4 5 6 7 8 9 10 Jack Queen King Ace]
-
-BLACKJACK = 21
-DEALER_LIM = 17
-
-# Classes definition
-
 class Card
   attr_reader :value
 
@@ -17,11 +7,14 @@ class Card
   end
 
   def to_s
-    print "#{@value} of #{@suit}"
+    "#{@value} of #{@suit}"
   end
 end
 
 class Deck
+  SUITS = %w[hearts spades clubs diamonds]
+  VALUES = %w[2 3 4 5 6 7 8 9 10 Jack Queen King Ace]
+
   def initialize
     @deck = []
     SUITS.each { |s| VALUES.each { |v| @deck << Card.new(s, v) }}
@@ -31,7 +24,7 @@ class Deck
   def deal
     new_card = @deck.pop
     print "Dealing new card: "
-    puts "#{new_card.to_s}"
+    puts "#{new_card}"
     new_card
   end
 end
@@ -41,12 +34,12 @@ class Hand
     @hand = []
   end
 
-  def add(newcard)
+  def <<(newcard)
     @hand << newcard
   end
 
   def show
-    @hand.each {|c| puts c.to_s}
+    @hand.each {|c| puts c}
   end
 
   def blackjack_value
@@ -70,6 +63,7 @@ class Hand
 end
 
 class Player
+  BLACKJACK = 21
   attr_reader :name
 
   def initialize(name)
@@ -78,7 +72,7 @@ class Player
   end
 
   def <<(newcard)
-    @hand.add(newcard)
+    @hand << newcard
   end
 
   def hand_show
@@ -103,6 +97,8 @@ class Player
 end
 
 class Dealer < Player
+  DEALER_LIM = 17
+
   def in_cards?
     self.hand_value < DEALER_LIM ? true : false
   end
