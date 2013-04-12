@@ -1,5 +1,5 @@
 class Card
-  attr_reader :value
+  attr_reader :value, :suit
 
   def initialize(suit, value)
     @suit = suit
@@ -23,8 +23,7 @@ class Deck
 
   def deal
     new_card = @deck.pop
-    print "Dealing new card: "
-    puts "#{new_card}"
+    puts "Dealing new card: #{new_card}"
     new_card
   end
 end
@@ -105,9 +104,9 @@ class Dealer < Player
 end
 
 class Game
-  def initialize(player_name)
+  def initialize(player_name, dealer_name)
     @player = Player.new(player_name)
-    @dealer = Dealer.new("Dealer")
+    @dealer = Dealer.new(dealer_name)
     @deck = Deck.new
   end
 
@@ -205,7 +204,7 @@ puts "Welcome to Blackjack OO!"
 print "Your name:"
 player_name = gets.chomp
 
-game = Game.new(player_name)
+game = Game.new(player_name, "Dealer")
 game.start
 game.show
 
