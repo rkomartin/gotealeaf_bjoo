@@ -222,7 +222,7 @@ class BJGame
   end
 end
 
-# Main app engine
+# App start
 
 puts "Welcome to Blackjack OO!"
 print "Your name:"
