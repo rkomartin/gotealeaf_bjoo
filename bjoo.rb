@@ -1,9 +1,11 @@
+# Generic card game classes
+
 class Card
   attr_reader :value, :suit
 
-  def initialize(suit, value)
-    @suit = suit
+  def initialize(value, suit)
     @value = value
+    @suit = suit
   end
 
   def to_s
@@ -17,7 +19,7 @@ class Deck
 
   def initialize
     @deck = []
-    SUITS.each { |s| VALUES.each { |v| @deck << Card.new(s, v) }}
+    SUITS.each { |s| VALUES.each { |v| @deck << Card.new(v, s) }}
     @deck.shuffle!
   end
 
@@ -41,7 +43,37 @@ class Hand
     @hand.each {|c| puts c}
   end
 
-  def blackjack_value
+  def value
+    @hand.size
+  end
+end
+
+class Player
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+    @hand = Hand.new
+  end
+
+  def <<(new_card)
+    @hand << new_card
+  end
+
+  def hand_show
+    puts "\n#{@name} has:"
+    @hand.show
+  end
+
+  def hand_value
+    @hand.value
+  end
+end
+
+# Blackjack classes
+
+class BJHand < Hand
+  def value
     arr = @hand.map{|c| c.value }
     total = 0
 
@@ -61,25 +93,12 @@ class Hand
   end
 end
 
-class Player
+class BJPlayer < Player
   BLACKJACK = 21
-  attr_reader :name
 
   def initialize(name)
     @name = name
-    @hand = Hand.new
-  end
-
-  def <<(newcard)
-    @hand << newcard
-  end
-
-  def hand_show
-    @hand.show
-  end
-
-  def hand_value
-    @hand.blackjack_value
+    @hand = BJHand.new
   end
 
   def in_cards?
@@ -95,7 +114,7 @@ class Player
   end
 end
 
-class Dealer < Player
+class BJDealer < BJPlayer
   DEALER_LIM = 17
 
   def in_cards?
@@ -103,17 +122,15 @@ class Dealer < Player
   end
 end
 
-class Game
+class BJGame
   def initialize(player_name, dealer_name)
-    @player = Player.new(player_name)
-    @dealer = Dealer.new(dealer_name)
+    @player = BJPlayer.new(player_name)
+    @dealer = BJDealer.new(dealer_name)
     @deck = Deck.new
   end
 
   def show
-    puts "\n#{@player.name} has:"
     @player.hand_show
-    puts "\n#{@dealer.name} has"
     @dealer.hand_show
   end
 
@@ -142,9 +159,7 @@ class Game
       if mv !~ /[hs]/i
         puts "\nWrong choice. Please choose again"
         next
-      end
-
-      if mv =~ /s/i
+      elsif mv =~ /s/i
         puts "\nYou choose to stay"
         break
       end
@@ -195,7 +210,6 @@ class Game
       puts "It's a tie at #{player_total}."
     end
   end
-
 end
 
 # Main app engine
@@ -204,7 +218,8 @@ puts "Welcome to Blackjack OO!"
 print "Your name:"
 player_name = gets.chomp
 
-game = Game.new(player_name, "Dealer")
+game = BJGame.new(player_name, "Dealer")
+
 game.start
 game.show
 
