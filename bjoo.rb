@@ -210,6 +210,16 @@ class BJGame
       puts "It's a tie at #{player_total}."
     end
   end
+
+  def main
+    start
+    show
+    player_round
+    show
+    dealer_round
+    show
+    showdown
+  end
 end
 
 # Main app engine
@@ -219,14 +229,4 @@ print "Your name:"
 player_name = gets.chomp
 
 game = BJGame.new(player_name, "Dealer")
-
-game.start
-game.show
-
-game.player_round
-game.show
-
-game.dealer_round
-game.show
-
-game.showdown
+game.main
