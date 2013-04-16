@@ -102,15 +102,15 @@ class BJPlayer < Player
   end
 
   def in_cards?
-    self.hand_value < BLACKJACK ? true : false
+    self.hand_value < BLACKJACK
   end
 
   def blackjack?
-    self.hand_value == BLACKJACK ? true : false
+    self.hand_value == BLACKJACK
   end
 
   def busted?
-    self.hand_value > BLACKJACK ? true : false
+    self.hand_value > BLACKJACK
   end
 end
 
@@ -118,7 +118,7 @@ class BJDealer < BJPlayer
   DEALER_LIM = 17
 
   def in_cards?
-    self.hand_value < DEALER_LIM ? true : false
+    self.hand_value < DEALER_LIM
   end
 end
 
