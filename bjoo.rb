@@ -24,23 +24,20 @@ class Deck
   end
 
   def deal
-    new_card = @deck.pop
-    puts "Dealing new card: #{new_card}"
-    new_card
+    @deck.pop
   end
 end
 
-class Hand
-  def initialize
+class Player
+  attr_reader :name, :hand
+
+  def initialize(name)
+    @name = name
     @hand = []
   end
 
-  def <<(newcard)
-    @hand << newcard
-  end
-
-  def show
-    @hand.each {|c| puts c}
+  def <<(new_card)
+    @hand << new_card
   end
 
   def value
@@ -48,31 +45,11 @@ class Hand
   end
 end
 
-class Player
-  attr_reader :name
-
-  def initialize(name)
-    @name = name
-    @hand = Hand.new
-  end
-
-  def <<(new_card)
-    @hand << new_card
-  end
-
-  def hand_show
-    puts "\n#{@name} has:"
-    @hand.show
-  end
-
-  def hand_value
-    @hand.value
-  end
-end
-
 # Blackjack classes
 
-class BJHand < Hand
+class BJPlayer < Player
+  BLACKJACK = 21
+
   def value
     arr = @hand.map{|c| c.value }
     total = 0
@@ -91,26 +68,17 @@ class BJHand < Hand
 
     total
   end
-end
-
-class BJPlayer < Player
-  BLACKJACK = 21
-
-  def initialize(name)
-    @name = name
-    @hand = BJHand.new
-  end
 
   def in_cards?
-    self.hand_value < BLACKJACK
+    self.value < BLACKJACK
   end
 
   def blackjack?
-    self.hand_value == BLACKJACK
+    self.value == BLACKJACK
   end
 
   def busted?
-    self.hand_value > BLACKJACK
+    self.value > BLACKJACK
   end
 end
 
@@ -118,7 +86,7 @@ class BJDealer < BJPlayer
   DEALER_LIM = 17
 
   def in_cards?
-    self.hand_value < DEALER_LIM
+    self.value < DEALER_LIM
   end
 end
 
@@ -130,17 +98,17 @@ class BJGame
   end
 
   def show
-    @player.hand_show
-    @dealer.hand_show
+    puts "\n#{@player.name} has:"
+    @player.hand.each {|c| puts c}
+    puts "\n#{@dealer.name} has:"
+    @dealer.hand.each {|c| puts c}
   end
 
   def start
     puts "\nDEALING FIRST TWO CARDS NOW:"
-    puts "\nPlayer:"
     @player << @deck.deal
-    @player << @deck.deal
-    puts "\nDealer:"
-    @dealer << @deck.deal   
+    @dealer << @deck.deal
+    @player << @deck.deal   
     @dealer << @deck.deal
   end
 
@@ -164,7 +132,9 @@ class BJGame
         break
       end
 
-      @player << @deck.deal
+      new_card = @deck.deal
+      puts "\nDealing to Player: #{new_card}"
+      @player << new_card
 
       if @player.blackjack?
         puts "\nCongratulations, you hit blackjack! You win!"
@@ -185,7 +155,9 @@ class BJGame
     end
 
     while @dealer.in_cards?
-      @dealer << @deck.deal
+      new_card = @deck.deal
+      puts "\nDealing to Dealer: #{new_card}"
+      @dealer << new_card
 
       if @dealer.blackjack?
         puts "\nSorry, dealer hits blackjack. You lose."
@@ -199,8 +171,8 @@ class BJGame
 
   def showdown
     puts "\nFINAL SHOWDOWN STARTING NOW:"
-    player_total = @player.hand_value
-    dealer_total = @dealer.hand_value
+    player_total = @player.value
+    dealer_total = @dealer.value
 
     if player_total > dealer_total
       puts "You win with #{player_total} against #{dealer_total}!"
@@ -211,7 +183,7 @@ class BJGame
     end
   end
 
-  def main
+  def run
     start
     show
     player_round
@@ -229,4 +201,4 @@ print "Your name:"
 player_name = gets.chomp
 
 game = BJGame.new(player_name, "Dealer")
-game.main
+game.run
